@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/error-handler.js';
 import { requestLogger } from './middleware/request-logger.js';
 import { authRoutes } from './routes/auth.js';
 import { openaiRoutes } from './routes/openai.js';
+import { anthropicRoutes } from './routes/anthropic.js';
 import { usageRoutes } from './routes/usage.js';
 import { rateLimiter } from './middleware/rate-limiter.js';
 
@@ -33,7 +34,10 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/auth', authRoutes);
 // Apply rate limiting to API endpoints
+// OpenAI-compatible routes (for Cursor IDE)
 app.use('/v1', rateLimiter(), openaiRoutes);
+// Anthropic-compatible routes (for Claude Code)
+app.use('/v1', rateLimiter(), anthropicRoutes);
 app.use('/usage', usageRoutes);
 
 // Home page - redirect to auth page

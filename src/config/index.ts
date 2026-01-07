@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import pkg from '../../package.json' assert { type: 'json' };
+import pkg from '../../package.json' with { type: 'json' };
 
 // Load environment variables
 dotenv.config();
@@ -28,11 +28,65 @@ const env = envSchema.parse({
   RATE_LIMIT_CHAT_COMPLETIONS: process.env.RATE_LIMIT_CHAT_COMPLETIONS,
 });
 
-// API endpoints
+// API endpoints for OpenAI-compatible Copilot API
 const API_ENDPOINTS = {
   GITHUB_COPILOT_TOKEN: 'https://api.github.com/copilot_internal/v2/token',
   GITHUB_COPILOT_COMPLETIONS: 'https://copilot-proxy.githubusercontent.com/v1/engines/copilot-codex/completions',
 };
+
+// API endpoints for Anthropic-compatible Copilot API (Claude models)
+const ANTHROPIC_API_ENDPOINTS = {
+  // GitHub Copilot's Anthropic chat completions endpoint
+  COPILOT_ANTHROPIC_CHAT: 'https://api.individual.githubcopilot.com/anthropic/chat/completions',
+};
+
+// Claude model mappings: Claude Code model names -> Copilot model names
+export const CLAUDE_MODEL_MAPPINGS: Record<string, string> = {
+  // Claude Opus 4.5 (latest flagship)
+  'claude-opus-4-5-20250514': 'claude-opus-4.5',
+  'claude-opus-4.5': 'claude-opus-4.5',
+  
+  // Claude Sonnet 4
+  'claude-sonnet-4-20250514': 'claude-sonnet-4',
+  'claude-sonnet-4': 'claude-sonnet-4',
+  
+  // Claude 3.5 Sonnet
+  'claude-3-5-sonnet-20241022': 'claude-3.5-sonnet',
+  'claude-3.5-sonnet': 'claude-3.5-sonnet',
+  
+  // Claude 3.5 Haiku
+  'claude-3-5-haiku-20241022': 'claude-3.5-haiku',
+  'claude-3.5-haiku': 'claude-3.5-haiku',
+  
+  // Legacy mappings
+  'claude-3-opus-20240229': 'claude-3-opus',
+  'claude-3-sonnet-20240229': 'claude-3-sonnet',
+  'claude-3-haiku-20240307': 'claude-3-haiku',
+};
+
+// Available Claude models via Copilot
+export const AVAILABLE_CLAUDE_MODELS = [
+  {
+    id: 'claude-opus-4-5-20250514',
+    display_name: 'Claude Opus 4.5',
+    copilot_model: 'claude-opus-4.5',
+  },
+  {
+    id: 'claude-sonnet-4-20250514',
+    display_name: 'Claude Sonnet 4',
+    copilot_model: 'claude-sonnet-4',
+  },
+  {
+    id: 'claude-3-5-sonnet-20241022',
+    display_name: 'Claude 3.5 Sonnet',
+    copilot_model: 'claude-3.5-sonnet',
+  },
+  {
+    id: 'claude-3-5-haiku-20241022',
+    display_name: 'Claude 3.5 Haiku',
+    copilot_model: 'claude-3.5-haiku',
+  },
+];
 
 // Configuration object
 export const config = {
@@ -51,6 +105,7 @@ export const config = {
     copilot: {
       clientId: env.GITHUB_COPILOT_CLIENT_ID,
       apiEndpoints: API_ENDPOINTS,
+      anthropicEndpoints: ANTHROPIC_API_ENDPOINTS,
     }
   },
   rateLimits: {

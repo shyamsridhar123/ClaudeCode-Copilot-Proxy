@@ -99,7 +99,7 @@ openaiRoutes.post('/chat/completions', requireAuth, async (req, res, next) => {
     
     // Handle streaming response
     if (stream) {
-      handleStreamingCompletion(req, res, next);
+      handleStreamingCompletion(req, res, next, sessionId);
     } else {
       // Handle non-streaming response
       try {
@@ -141,7 +141,8 @@ openaiRoutes.post('/chat/completions', requireAuth, async (req, res, next) => {
 async function handleStreamingCompletion(
   req: express.Request, 
   res: express.Response, 
-  next: express.NextFunction
+  next: express.NextFunction,
+  sessionId: string
 ) {
   try {
     const request = req.body as OpenAICompletionRequest;

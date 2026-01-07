@@ -1,33 +1,35 @@
-# GitHub Copilot Proxy for Cursor IDE
+# GitHub Copilot Proxy for Claude Code & Cursor IDE
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.0+-green.svg)](https://nodejs.org/)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-A proxy server that enables Cursor IDE to use GitHub Copilot's API instead of Cursor's default AI services. This allows you to use your GitHub Copilot subscription with Cursor IDE, maximizing your resources by switching between services as needed.
+A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Copilot's AI models instead of direct API access. Use your GitHub Copilot subscription to access Claude models (Opus 4.5, Sonnet 4, etc.) in Claude Code, or GPT models in Cursor IDE.
 
 ## 🚀 Features
 
-- **OpenAI API Compatibility**: Implements the OpenAI API format that Cursor IDE can use
+- **Anthropic API Compatibility**: Implements the Anthropic Messages API for Claude Code
+- **OpenAI API Compatibility**: Implements the OpenAI API format for Cursor IDE
+- **Claude Model Support**: Access Claude Opus 4.5, Sonnet 4, and other models via Copilot
 - **GitHub Copilot Integration**: Connects to GitHub Copilot's backend services
 - **Seamless Authentication**: Handles GitHub OAuth device flow authentication
 - **Token Management**: Automatically refreshes Copilot tokens
 - **Streaming Support**: Supports both streaming and non-streaming completions
-- **Easy Configuration**: Simple setup with Cursor IDE
+- **Easy Configuration**: Simple setup with Claude Code or Cursor IDE
 
 ## 📋 Prerequisites
 
 - Node.js 18.0 or higher
-- GitHub Copilot subscription
-- Cursor IDE
+- GitHub Copilot subscription (with access to Claude models)
+- Claude Code or Cursor IDE
 
 ## 🔧 Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/bjornmelin/github-copilot-proxy.git
-   cd github-copilot-proxy
+   git clone https://github.com/shyamsridhar123/ClaudeCode-Copilot-Proxy.git
+   cd ClaudeCode-Copilot-Proxy
    ```
 
 2. Install dependencies:
@@ -50,6 +52,24 @@ A proxy server that enables Cursor IDE to use GitHub Copilot's API instead of Cu
    npm start
    ```
 
+## 🤖 Configuration with Claude Code
+
+1. Start the proxy server: `npm start`
+2. Open http://localhost:3000 in your browser
+3. Complete GitHub authentication
+4. Configure Claude Code to use the proxy:
+   - Set the API base URL to `http://localhost:3000`
+   - The proxy handles authentication via GitHub OAuth
+
+### Supported Claude Models
+
+| Model | Copilot Model |
+|-------|---------------|
+| `claude-opus-4-5-20250514` | Claude Opus 4.5 |
+| `claude-sonnet-4-20250514` | Claude Sonnet 4 |
+| `claude-3-5-sonnet-20241022` | Claude 3.5 Sonnet |
+| `claude-3-5-haiku-20241022` | Claude 3.5 Haiku |
+
 ## 🔌 Configuration with Cursor IDE
 
 1. Open Cursor IDE
@@ -70,6 +90,27 @@ To switch back to Cursor's API:
 2. Remove the Override OpenAI Base URL
 
 ## 🤔 How It Works
+
+### For Claude Code (Anthropic API)
+
+```
+┌─────────────────┐     ┌──────────────────────────┐     ┌─────────────────────┐
+│   Claude Code   │────▶│   Copilot Proxy Server   │────▶│  GitHub Copilot API │
+│  (Anthropic API │     │                          │     │  (Anthropic Models) │
+│     format)     │     │  - Auth (OAuth device)   │     │  - claude-opus-4.5  │
+└─────────────────┘     │  - Request translation   │     │  - claude-sonnet-4  │
+                        │  - Response translation  │     │  - etc.             │
+                        │  - Streaming support     │     └─────────────────────┘
+                        └──────────────────────────┘
+```
+
+1. The proxy authenticates with GitHub using the OAuth device flow
+2. GitHub provides a token that the proxy uses to obtain a Copilot token
+3. Claude Code sends requests to the proxy in Anthropic format (`/v1/messages`)
+4. The proxy forwards requests to GitHub Copilot's Anthropic model endpoints
+5. Responses are returned in Anthropic format with streaming support
+
+### For Cursor IDE (OpenAI API)
 
 1. The proxy authenticates with GitHub using the OAuth device flow
 2. GitHub provides a token that the proxy uses to obtain a Copilot token

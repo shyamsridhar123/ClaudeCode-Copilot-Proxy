@@ -9,39 +9,55 @@ import { logger } from '../utils/logger.js';
 // you might want to use Redis or another shared cache
 let githubToken: string | null = null;
 let copilotToken: CopilotToken | null = null;
+let pendingVerification: VerificationResponse | null = null;
 
 /**
  * Initialize the OAuth device flow for GitHub authentication
  * @returns Promise<VerificationResponse> Device verification info
  */
 export async function initiateDeviceFlow(): Promise<VerificationResponse> {
-  const auth = createOAuthDeviceAuth({
-    clientType: "oauth-app",
-    clientId: config.github.copilot.clientId,
-    scopes: ["read:user"],
-    onVerification(verification) {
-      logger.info('Device verification initiated', { 
-        verification_uri: verification.verification_uri,
-        user_code: verification.user_code 
-      });
-    },
-  });
+  return new Promise((resolve, reject) => {
+    const auth = createOAuthDeviceAuth({
+      clientType: "oauth-app",
+      clientId: config.github.copilot.clientId,
+      scopes: ["read:user"],
+      onVerification(verification) {
+        logger.info('Device verification initiated', { 
+          verification_uri: verification.verification_uri,
+          user_code: verification.user_code 
+        });
+        
+        // Store and resolve with verification info
+        pendingVerification = {
+          verification_uri: verification.verification_uri,
+          user_code: verification.user_code,
+          expires_in: verification.expires_in,
+          interval: verification.interval,
+          status: 'pending_verification'
+        };
+        resolve(pendingVerification);
+      },
+    });
 
-  try {
-    // Start the device authorization flow
-    const verification = await auth({ type: "oauth" });
-    
-    return {
-      verification_uri: verification.verification_uri,
-      user_code: verification.user_code,
-      expires_in: verification.expires_in,
-      interval: verification.interval,
-      status: 'pending_verification'
-    };
-  } catch (error) {
-    logger.error('Failed to initiate device flow:', error);
-    throw new Error('Failed to initiate GitHub authentication');
-  }
+    // Start the device authorization flow (this triggers onVerification)
+    auth({ type: "oauth" }).then((tokenAuth) => {
+      // User completed verification, store the token
+      if (tokenAuth.token) {
+        githubToken = tokenAuth.token;
+        // Refresh Copilot token
+        refreshCopilotToken().catch((err) => {
+          logger.error('Failed to get Copilot token after auth:', err);
+        });
+      }
+    }).catch((error) => {
+      // If verification hasn't been sent yet, reject
+      if (!pendingVerification) {
+        logger.error('Failed to initiate device flow:', error);
+        reject(new Error('Failed to initiate GitHub authentication'));
+      }
+      // Otherwise, this is expected (user hasn't completed verification yet)
+    });
+  });
 }
 
 /**
@@ -54,10 +70,18 @@ export async function checkDeviceFlowAuth(): Promise<boolean> {
     return true;
   }
 
+  // If there's no pending verification, we can't check
+  if (!pendingVerification) {
+    return false;
+  }
+
   const auth = createOAuthDeviceAuth({
     clientType: "oauth-app",
     clientId: config.github.copilot.clientId,
     scopes: ["read:user"],
+    onVerification() {
+      // No-op: we already have verification info
+    },
   });
 
   try {
@@ -75,9 +99,10 @@ export async function checkDeviceFlowAuth(): Promise<boolean> {
     }
     
     return false;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If it's a pending authorization, that's expected
-    if (error.message && error.message.includes('authorization_pending')) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes('authorization_pending')) {
       return false;
     }
     
