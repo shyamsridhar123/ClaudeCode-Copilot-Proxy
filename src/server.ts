@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { config } from './config/index.js';
@@ -9,6 +10,7 @@ import { authRoutes } from './routes/auth.js';
 import { openaiRoutes } from './routes/openai.js';
 import { anthropicRoutes } from './routes/anthropic.js';
 import { usageRoutes } from './routes/usage.js';
+import { healthRoutes } from './routes/health.js';
 import { rateLimiter } from './middleware/rate-limiter.js';
 
 // Get __dirname equivalent in ESM
@@ -18,6 +20,24 @@ const __dirname = path.dirname(__filename);
 // Initialize express app
 export const app = express();
 
+// Apply security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for HTML pages
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://github.com", "https://api.github.com"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true,
+  },
+}));
+
 // Apply middleware
 app.use(cors());
 app.use(express.json());
@@ -26,10 +46,8 @@ app.use(requestLogger);
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', version: config.version });
-});
+// Health check endpoints (no rate limiting)
+app.use(healthRoutes);
 
 // Routes
 app.use('/auth', authRoutes);
