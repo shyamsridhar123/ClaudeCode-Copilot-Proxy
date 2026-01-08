@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import pkg from '../../package.json' with { type: 'json' };
+// @ts-expect-error - ts-jest doesn't support import attributes yet
+import pkg from '../../package.json';
 
 // Load environment variables
 dotenv.config();
