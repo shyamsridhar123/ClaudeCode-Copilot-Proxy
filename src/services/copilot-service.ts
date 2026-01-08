@@ -20,9 +20,7 @@ export function convertMessagesToCopilotPrompt(messages: OpenAIMessage[]): strin
     return '';
   }
   
-  let systemPrompt = '';
-  let userPrompts = '';
-  let assistantResponses = '';
+  let result = '';
   
   // Process messages in order to construct a coherent prompt
   for (const message of messages) {
@@ -30,22 +28,22 @@ export function convertMessagesToCopilotPrompt(messages: OpenAIMessage[]): strin
     
     switch (message.role) {
       case 'system':
-        systemPrompt += message.content + '\n\n';
+        result += message.content + '\n\n';
         break;
       case 'user':
-        userPrompts += 'User: ' + message.content + '\n\n';
+        result += 'User: ' + message.content + '\n\n';
         break;
       case 'assistant':
-        assistantResponses += 'Assistant: ' + message.content + '\n\n';
+        result += 'Assistant: ' + message.content + '\n\n';
         break;
     }
   }
   
   // Ensure it ends with a user message to prompt a response
   const lastMessage = messages[messages.length - 1];
-  const needsAssistantPrompt = lastMessage.role !== 'user';
+  const needsAssistantPrompt = lastMessage.role === 'user';
   
-  return systemPrompt + userPrompts + assistantResponses + (needsAssistantPrompt ? '' : 'Assistant: ');
+  return result + (needsAssistantPrompt ? 'Assistant: ' : '');
 }
 
 /**
@@ -73,7 +71,7 @@ export function detectLanguageFromMessages(messages: OpenAIMessage[]): string {
   }
   
   // Check for file extensions in the message
-  const fileExtensionMatch = content.match(/\.([a-zA-Z0-9]+)(?:\s|"|')/);
+  const fileExtensionMatch = content.match(/\.([a-zA-Z0-9]+)(?:\s|"|'|\?)/);
   if (fileExtensionMatch && fileExtensionMatch[1]) {
     const ext = fileExtensionMatch[1].toLowerCase();
     const extToLang: Record<string, string> = {
