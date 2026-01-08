@@ -75,8 +75,8 @@ export function rateLimiter(maxRequestsPerMinute?: number) {
         // Check if this particular request might exceed per-request token limits
         // This is a rough estimate based on request body size
         if (req.body && req.body.messages) {
-          const messages = req.body.messages;
-          const estimatedTokens = messages.reduce((total: number, msg: any) => {
+          const messages = req.body.messages as Array<{ content?: string | null }>;
+          const estimatedTokens = messages.reduce((total: number, msg) => {
             const content = typeof msg.content === 'string' ? msg.content : '';
             // Rough estimate: 1 token ≈ 4 chars
             return total + Math.ceil(content.length / 4);

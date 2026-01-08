@@ -1,3 +1,9 @@
+export interface OpenAIFunction {
+  name: string;
+  description?: string;
+  parameters?: Record<string, unknown>;
+}
+
 export interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant' | 'function';
   content: string | null;
@@ -21,7 +27,7 @@ export interface OpenAICompletionRequest {
   frequency_penalty?: number;
   logit_bias?: Record<string, number>;
   user?: string;
-  functions?: any[];
+  functions?: OpenAIFunction[];
   function_call?: 'auto' | 'none' | { name: string };
 }
 
