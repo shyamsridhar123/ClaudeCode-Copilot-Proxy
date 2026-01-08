@@ -34,10 +34,11 @@ app.get('/health', (req, res) => {
 // Routes
 app.use('/auth', authRoutes);
 // Apply rate limiting to API endpoints
-// OpenAI-compatible routes (for Cursor IDE)
-app.use('/v1', rateLimiter(), openaiRoutes);
-// Anthropic-compatible routes (for Claude Code) - mounted at /anthropic/v1
+// Anthropic-compatible routes (for Claude Code) - mounted at both /v1 and /anthropic/v1
+app.use('/v1', rateLimiter(), anthropicRoutes);
 app.use('/anthropic/v1', rateLimiter(), anthropicRoutes);
+// OpenAI-compatible routes (for Cursor IDE) - mounted at /openai/v1
+app.use('/openai/v1', rateLimiter(), openaiRoutes);
 app.use('/usage', usageRoutes);
 
 // Home page - redirect to auth page

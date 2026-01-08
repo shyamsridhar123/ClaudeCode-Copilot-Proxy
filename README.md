@@ -56,12 +56,36 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 ## 🤖 Configuration with Claude Code
 
-1. Start the proxy server: `npm start`
-2. Open http://localhost:3000 in your browser
-3. Complete GitHub authentication
+1. Start the proxy server:
+   ```bash
+   npm start
+   ```
+   You should see the authentication portal at http://localhost:3000
+
+2. Complete GitHub authentication by pasting your auth code in the browser
+
+3. Enter `claude` in your terminal to start Claude Code
+
 4. Configure Claude Code to use the proxy:
-   - Set the API base URL to `http://localhost:3000`
-   - The proxy handles authentication via GitHub OAuth
+   ```bash
+   claude config set api_base_url http://localhost:3000
+   ```
+
+5. Press `Ctrl+C` twice to quit Claude
+
+6. Enter `claude` again to restart with the new configuration
+
+### How to Verify It's Working
+
+✅ **Server logs show 200 responses**: Look for `POST /v1/messages - 200` in the server output
+
+✅ **Token usage is tracked**: You'll see `Tracked request for session ... +XX tokens`
+
+✅ **Model being used**: Shows `"model": "claude-opus-4.5"` or `"claude-sonnet-4.5"`
+
+✅ **Claude Code gets responses**: Your commands should complete without errors
+
+✅ **Usage stats**: Check http://localhost:3000/usage.html in your browser to see how many tokens you've used
 
 ### Supported Claude Models
 
