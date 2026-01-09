@@ -10,7 +10,7 @@
     "dev": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "prepare": "husky"
+    "postinstall": "node -e \"try { require('fs').statSync('.git') && require('child_process').execSync('husky', {stdio: 'inherit'}) } catch (e) {}\""
   },
   "repository": {
     "type": "git",
