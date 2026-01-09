@@ -4,7 +4,8 @@
   "description": "Proxy server that lets Cursor IDE use GitHub Copilot APIs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "node -e \"require('fs').cpSync('src/public', 'dist/public', {recursive: true})\"",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts",
