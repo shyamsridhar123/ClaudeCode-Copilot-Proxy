@@ -114,13 +114,35 @@ That's it! The server will start at http://localhost:3000
 
 ✅ **Usage stats**: Check http://localhost:3000/usage.html in your browser to see how many tokens you've used
 
-### Supported Claude Models
+### Supported Models
 
-| Model | Copilot Model |
-|-------|---------------|
-| `claude-opus-4-5-20250514` | Claude Opus 4.5 |
-| `claude-sonnet-4-5-20250514` | Claude Sonnet 4.5 |
-| `claude-haiku-4-5-20250514` | Claude Haiku 4.5 |
+| Model | Description |
+|-------|-------------|
+| `claude-opus-4.5` | Claude Opus 4.5 (Default) |
+| `claude-sonnet-4.5` | Claude Sonnet 4.5 |
+| `claude-haiku-4.5` | Claude Haiku 4.5 |
+
+### Optional: Use Other Models
+
+The proxy also supports GPT and Gemini models available in GitHub Copilot. To use them, add `ANTHROPIC_MODEL` to your settings:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:3000",
+    "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+    "ANTHROPIC_MODEL": "gpt-5.2",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "gemini-3-pro-preview",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  }
+}
+```
+
+| Model | Description |
+|-------|-------------|
+| `gpt-5.2` | GPT 5.2 |
+| `gemini-3-pro-preview` | Gemini 3 Pro Preview |
 
 ## 🔌 Configuration with Cursor IDE
 

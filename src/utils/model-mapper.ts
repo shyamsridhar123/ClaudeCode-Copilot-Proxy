@@ -1,32 +1,35 @@
 /**
  * Model mapping utilities for Claude Code -> GitHub Copilot
+ * 
+ * Supports Claude, GPT, Gemini, and other models available in Copilot
  */
 
 import { CLAUDE_MODEL_MAPPINGS, AVAILABLE_CLAUDE_MODELS } from '../config/index.js';
 import { AnthropicModel, AnthropicModelList } from '../types/anthropic.js';
 
 /**
- * Map a Claude Code model name to the Copilot model name
+ * Map a model name to the Copilot model name
  * 
- * @param claudeModel - The model name from Claude Code (e.g., "claude-opus-4-5-20250514")
- * @returns The corresponding Copilot model name (e.g., "claude-opus-4.5")
+ * @param model - The model name (e.g., "claude-opus-4-5-20250514", "gpt-5.2", "gemini-3-pro")
+ * @returns The corresponding Copilot model name
  */
-export function mapClaudeModelToCopilot(claudeModel: string): string {
-  // Check if we have a direct mapping
-  const mapped = CLAUDE_MODEL_MAPPINGS[claudeModel];
+export function mapClaudeModelToCopilot(model: string): string {
+  // Check if we have a direct mapping for Claude models
+  const mapped = CLAUDE_MODEL_MAPPINGS[model];
   if (mapped) {
     return mapped;
   }
-  
+
   // Check for partial matches (model name might have extra suffix)
   for (const [key, value] of Object.entries(CLAUDE_MODEL_MAPPINGS)) {
-    if (claudeModel.startsWith(key) || key.startsWith(claudeModel)) {
+    if (model.startsWith(key) || key.startsWith(model)) {
       return value;
     }
   }
-  
-  // Default fallback: use claude-opus-4.5 as default (user requested)
-  return 'claude-opus-4.5';
+
+  // For non-Claude models (GPT, Gemini, etc.), pass through as-is
+  // GitHub Copilot supports multiple model providers
+  return model;
 }
 
 /**
@@ -40,13 +43,13 @@ export function isValidClaudeModel(model: string): boolean {
   if (CLAUDE_MODEL_MAPPINGS[model]) {
     return true;
   }
-  
+
   // Check if it's a Copilot model name
   const copilotModels = Object.values(CLAUDE_MODEL_MAPPINGS);
   if (copilotModels.includes(model)) {
     return true;
   }
-  
+
   // Check if it starts with 'claude'
   return model.toLowerCase().startsWith('claude');
 }
@@ -64,7 +67,7 @@ export function getAvailableModels(): AnthropicModelList {
     owned_by: 'anthropic',
     display_name: model.display_name,
   }));
-  
+
   return {
     object: 'list',
     data: models,
@@ -81,11 +84,11 @@ export function getModelDisplayName(model: string): string {
   const found = AVAILABLE_CLAUDE_MODELS.find(
     (m) => m.id === model || m.copilot_model === model
   );
-  
+
   if (found) {
     return found.display_name;
   }
-  
+
   // Generate a display name from the model ID
   return model
     .replace(/-/g, ' ')
