@@ -64,16 +64,37 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 2. Complete GitHub authentication by pasting your auth code in the browser
 
-3. Enter `claude` in your terminal to start Claude Code
+3. Configure Claude Code to use the proxy by adding environment variables to your settings file:
 
-4. Configure Claude Code to use the proxy:
-   ```bash
-   claude config set api_base_url http://localhost:3000
+   **Option A: Project-specific configuration** (recommended)
+   
+   Add to `.claude/settings.local.json` in your project:
+   ```json
+   {
+     "env": {
+       "ANTHROPIC_BASE_URL": "http://localhost:3000",
+       "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+       "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+       "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+     }
+   }
    ```
 
-5. Press `Ctrl+C` twice to quit Claude
+   **Option B: Global configuration**
+   
+   Add to `~/.claude/settings.json`:
+   ```json
+   {
+     "env": {
+       "ANTHROPIC_BASE_URL": "http://localhost:3000",
+       "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+       "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+       "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+     }
+   }
+   ```
 
-6. Enter `claude` again to restart with the new configuration
+4. Enter `claude` in your terminal to start Claude Code with the proxy
 
 ### How to Verify It's Working
 
