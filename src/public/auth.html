@@ -123,7 +123,7 @@
     
     <div id="auth-success" class="hidden">
       <h2>Authentication Successful!</h2>
-      <p>You can now use GitHub Copilot with Cursor IDE.</p>
+      <p>You can now use GitHub Copilot with Cursor IDE and Claude Code.</p>
       <p>Your token will expire at: <span id="token-expiry"></span></p>
       <button id="logout-btn">Logout</button>
     </div>
@@ -133,9 +133,17 @@
     <h2>Setup Instructions</h2>
     <ol>
       <li>Complete the authentication process above</li>
-      <li>In Cursor IDE, go to Settings > API Keys</li>
+      <li><strong>For Cursor IDE:</strong> Go to Settings > API Keys</li>
       <li>In the "Override OpenAI Base URL" section, enter: <code id="api-base-url">http://localhost:3000</code></li>
-      <li>Start using Cursor IDE with GitHub Copilot!</li>
+      <li><strong>For Claude Code:</strong> Add to <code>.claude/settings.local.json</code>:
+        <pre style="background:#f6f8fa;padding:1rem;border-radius:6px;font-size:12px;">{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:3000",
+    "ANTHROPIC_AUTH_TOKEN": "sk-dummy"
+  }
+}</pre>
+      </li>
+      <li>Start using Cursor IDE or Claude Code with GitHub Copilot!</li>
     </ol>
   </div>
   
