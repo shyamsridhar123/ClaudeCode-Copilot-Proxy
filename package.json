@@ -1,8 +1,15 @@
 {
-  "name": "github-copilot-proxy",
+  "name": "claudecode-copilot-proxy",
   "version": "0.1.0",
-  "description": "Proxy server that lets Cursor IDE use GitHub Copilot APIs",
+  "description": "Proxy server that lets Claude Code and Cursor IDE use GitHub Copilot APIs",
   "main": "dist/index.js",
+  "bin": {
+    "claudecode-copilot-proxy": "./bin/claudecode-copilot-proxy.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "scripts": {
     "build": "tsc && npm run copy-assets",
     "copy-assets": "node -e \"require('fs').cpSync('src/public', 'dist/public', {recursive: true})\"",

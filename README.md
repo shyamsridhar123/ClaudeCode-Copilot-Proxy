@@ -28,6 +28,17 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 ## 🔧 Installation
 
+### Option A: Quick Install (Recommended)
+
+```bash
+npm install -g claudecode-copilot-proxy
+claudecode-copilot-proxy
+```
+
+That's it! The server will start at http://localhost:3000
+
+### Option B: From Source
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/shyamsridhar123/ClaudeCode-Copilot-Proxy.git
@@ -39,17 +50,12 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
    npm install
    ```
 
-3. Create a `.env` file:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Build the project:
+3. Build the project:
    ```bash
    npm run build
    ```
 
-5. Start the proxy server:
+4. Start the proxy server:
    ```bash
    npm start
    ```
