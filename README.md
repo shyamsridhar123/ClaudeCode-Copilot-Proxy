@@ -28,6 +28,17 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 ## 🔧 Installation
 
+### Option A: Quick Install (Recommended)
+
+```bash
+npm install -g claudecode-copilot-proxy
+claudecode-copilot-proxy
+```
+
+That's it! The server will start at http://localhost:3000
+
+### Option B: From Source
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/shyamsridhar123/ClaudeCode-Copilot-Proxy.git
@@ -39,17 +50,12 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
    npm install
    ```
 
-3. Create a `.env` file:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Build the project:
+3. Build the project:
    ```bash
    npm run build
    ```
 
-5. Start the proxy server:
+4. Start the proxy server:
    ```bash
    npm start
    ```
@@ -64,16 +70,37 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 2. Complete GitHub authentication by pasting your auth code in the browser
 
-3. Enter `claude` in your terminal to start Claude Code
+3. Configure Claude Code to use the proxy by adding environment variables to your settings file:
 
-4. Configure Claude Code to use the proxy:
-   ```bash
-   claude config set api_base_url http://localhost:3000
+   **Option A: Project-specific configuration** (recommended)
+   
+   Add to `.claude/settings.local.json` in your project:
+   ```json
+   {
+     "env": {
+       "ANTHROPIC_BASE_URL": "http://localhost:3000",
+       "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+       "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+       "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+     }
+   }
    ```
 
-5. Press `Ctrl+C` twice to quit Claude
+   **Option B: Global configuration**
+   
+   Add to `~/.claude/settings.json`:
+   ```json
+   {
+     "env": {
+       "ANTHROPIC_BASE_URL": "http://localhost:3000",
+       "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+       "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+       "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+     }
+   }
+   ```
 
-6. Enter `claude` again to restart with the new configuration
+4. Enter `claude` in your terminal to start Claude Code with the proxy
 
 ### How to Verify It's Working
 
@@ -87,13 +114,35 @@ A proxy server that enables **Claude Code** and **Cursor IDE** to use GitHub Cop
 
 ✅ **Usage stats**: Check http://localhost:3000/usage.html in your browser to see how many tokens you've used
 
-### Supported Claude Models
+### Supported Models
 
-| Model | Copilot Model |
-|-------|---------------|
-| `claude-opus-4-5-20250514` | Claude Opus 4.5 |
-| `claude-sonnet-4-5-20250514` | Claude Sonnet 4.5 |
-| `claude-haiku-4-5-20250514` | Claude Haiku 4.5 |
+| Model | Description |
+|-------|-------------|
+| `claude-opus-4.5` | Claude Opus 4.5 (Default) |
+| `claude-sonnet-4.5` | Claude Sonnet 4.5 |
+| `claude-haiku-4.5` | Claude Haiku 4.5 |
+
+### Optional: Use Other Models
+
+The proxy also supports GPT and Gemini models available in GitHub Copilot. To use them, add `ANTHROPIC_MODEL` to your settings:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:3000",
+    "ANTHROPIC_AUTH_TOKEN": "sk-dummy",
+    "ANTHROPIC_MODEL": "gpt-5.2",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "gemini-3-pro-preview",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  }
+}
+```
+
+| Model | Description |
+|-------|-------------|
+| `gpt-5.2` | GPT 5.2 |
+| `gemini-3-pro-preview` | Gemini 3 Pro Preview |
 
 ## 🔌 Configuration with Cursor IDE
 

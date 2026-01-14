@@ -41,43 +41,48 @@ const ANTHROPIC_API_ENDPOINTS = {
 };
 
 // Claude model mappings: Claude Code model names -> Copilot model names
+// Uses prefix matching, so 'claude-opus-4-5' matches 'claude-opus-4-5-20251001' etc.
 export const CLAUDE_MODEL_MAPPINGS: Record<string, string> = {
-  // Claude Opus 4.5 (default - latest flagship)
-  'claude-opus-4-5-20250514': 'claude-opus-4.5',
-  'claude-opus-4.5': 'claude-opus-4.5',
+  // Claude Opus 4.5
+  'claude-opus-4-5': 'claude-opus-4.5',
   'opus': 'claude-opus-4.5',
-  
+
   // Claude Sonnet 4.5
-  'claude-sonnet-4-5-20250514': 'claude-sonnet-4.5',
-  'claude-sonnet-4.5': 'claude-sonnet-4.5',
-  'claude-sonnet-4-20250514': 'claude-sonnet-4.5',
-  'claude-sonnet-4': 'claude-sonnet-4.5',
+  'claude-sonnet-4-5': 'claude-sonnet-4.5',
   'sonnet': 'claude-sonnet-4.5',
-  
+
   // Claude Haiku 4.5
-  'claude-haiku-4-5-20250514': 'claude-haiku-4.5',
-  'claude-haiku-4.5': 'claude-haiku-4.5',
-  'claude-3-5-haiku-20241022': 'claude-haiku-4.5',
-  'claude-3.5-haiku': 'claude-haiku-4.5',
+  'claude-haiku-4-5': 'claude-haiku-4.5',
   'haiku': 'claude-haiku-4.5',
 };
 
 // Available Claude models via Copilot (Opus 4.5 is default)
 export const AVAILABLE_CLAUDE_MODELS = [
   {
-    id: 'claude-opus-4-5-20250514',
+    id: 'claude-opus-4-5',
     display_name: 'Claude Opus 4.5 (Default)',
     copilot_model: 'claude-opus-4.5',
   },
   {
-    id: 'claude-sonnet-4-5-20250514',
+    id: 'claude-sonnet-4-5',
     display_name: 'Claude Sonnet 4.5',
     copilot_model: 'claude-sonnet-4.5',
   },
   {
-    id: 'claude-haiku-4-5-20250514',
+    id: 'claude-haiku-4-5',
     display_name: 'Claude Haiku 4.5',
     copilot_model: 'claude-haiku-4.5',
+  },
+  // Optional: GPT and Gemini models (pass-through, user must specify in settings)
+  {
+    id: 'gpt-5.2',
+    display_name: 'GPT 5.2 (Optional)',
+    copilot_model: 'gpt-5.2',
+  },
+  {
+    id: 'gemini-3-pro-preview',
+    display_name: 'Gemini 3 Pro Preview (Optional)',
+    copilot_model: 'gemini-3-pro-preview',
   },
 ];
 
